@@ -1,2 +1,3 @@
 .cache/clangd/index
 build
+db.sqlite3

@@ -1,11 +1,9 @@
-#include <locale.h>
+#include <stdio.h>
 #include <stdlib.h>
-#include <ncurses.h>
+#include <string.h>
 #include "db.h"
-
-
 int main(int argc, char *argv[])
 {
-	setlocale(LC_ALL, "");
+	createdb();
 	return EXIT_SUCCESS;
 }

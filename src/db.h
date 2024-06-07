@@ -3,18 +3,34 @@
 #define BUFFER_SIZE 64
 #define BIG_BUFFER_SIZE 256
 
-typedef struct Paciente {
-	struct Paciente *next;
-	struct Paciente *prev;
-	struct Paciente *child;
-	char nome[BUFFER_SIZE];
-	char nasc[BUFFER_SIZE];
-	unsigned short gender;
-	unsigned short tipoSanguineo;
-	char endereco[BUFFER_SIZE];
-	char telefone[SMALL_BUFFER_SIZE];
-	char email[BUFFER_SIZE];
-	char alergias[BIG_BUFFER_SIZE];
-	char deficiencias[BIG_BUFFER_SIZE];
-	unsigned short tipoAtendimento;
+typedef struct {
+	unsigned int id;
+	char *nome;
+	char *cpf;
+	char *rg;
+	char *telefone;
+	char *rua;
+	char *bairro;
+	char *numero;
+	char *cep;
+	unsigned int idade;
+	char *alergias;
+	char *deficiencias;
+	unsigned short genero;
 } Paciente;
+
+typedef struct {
+	unsigned int id;
+	char *nome;
+	char *especialidade;
+	unsigned int cod;
+} Medico;
+
+typedef struct {
+	Paciente *p;
+	Medico *m;
+	char *dataHora;
+	unsigned short status;
+} Agendamento;
+
+int createdb();
