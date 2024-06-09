@@ -2,15 +2,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 #define DB_STRING "./db.sqlite3"
-sqlite3 *db;
 
 int createdb()
 {
-	sqlite3_stmt *res;
+	sqlite3 *db;
 	int rc = sqlite3_open(DB_STRING, &db);
 	if (rc != SQLITE_OK) {
 		fprintf(stderr, "Erro ao criar banco: rc %d\n", rc);
-		return 1;
+		return ERROR_CODE;
 	}
 
 	char *err_msg = 0;
@@ -49,8 +48,86 @@ int createdb()
 
 	if (rc != SQLITE_OK) {
 		fprintf(stderr, "Erro ao criar banco: %s\n", err_msg);
-		return 1;
+		sqlite3_free(err_msg);
+		sqlite3_close(db);
+		return ERROR_CODE;
 	}
+
+	sqlite3_free(err_msg);
 	sqlite3_close(db);
-	return 0;
+	return OK_CODE;
+}
+
+int inserirMedico(Medico *medico)
+{
+	sqlite3 *db;
+	sqlite3_stmt *stmt;
+	int rc = sqlite3_open(DB_STRING, &db);
+	if (rc != SQLITE_OK) {
+		fprintf(stderr, "Erro ao inserir medico, rc: %d\n", rc);
+		return ERROR_CODE;
+	}
+
+	char *sql =
+		"INSERT INTO Medico(nome,especialidade,cod) VALUES(?, ?, ?)";
+	rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+	rc = sqlite3_bind_text(stmt, 1, medico->nome, -1, SQLITE_TRANSIENT);
+	rc = sqlite3_bind_text(stmt, 2, medico->especialidade, -1,
+			       SQLITE_TRANSIENT);
+	rc = sqlite3_bind_int(stmt, 3, medico->cod);
+
+	rc = sqlite3_step(stmt);
+	if (rc != SQLITE_OK) {
+		fprintf(stderr, "Erro ao inserir medico, rc: %d\n", rc);
+		sqlite3_close(db);
+		return ERROR_CODE;
+	}
+
+	rc = sqlite3_finalize(stmt);
+	if (rc != SQLITE_OK) {
+		fprintf(stderr, "Erro ao inserir medico, rc: %d\n", rc);
+		sqlite3_close(db);
+		return ERROR_CODE;
+	}
+
+	medico->id = sqlite3_last_insert_rowid(db);
+	sqlite3_close(db);
+	return OK_CODE;
+}
+
+int inserirPaciente(Paciente *paciente)
+{
+	sqlite3 *db;
+	sqlite3_stmt *stmt;
+	int rc = sqlite3_open(DB_STRING, &db);
+	if (rc != SQLITE_OK) {
+		fprintf(stderr, "Erro ao inserir medico, rc: %d\n", rc);
+		return ERROR_CODE;
+	}
+
+	char *sql =
+		"INSERT INTO Medico(nome,especialidade,cod) VALUES(?, ?, ?)";
+	rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+	rc = sqlite3_bind_text(stmt, 1, medico->nome, -1, SQLITE_TRANSIENT);
+	rc = sqlite3_bind_text(stmt, 2, medico->especialidade, -1,
+			       SQLITE_TRANSIENT);
+	rc = sqlite3_bind_int(stmt, 3, medico->cod);
+
+	rc = sqlite3_step(stmt);
+	if (rc != SQLITE_OK) {
+		fprintf(stderr, "Erro ao inserir medico, rc: %d\n", rc);
+		sqlite3_close(db);
+		return ERROR_CODE;
+	}
+
+	rc = sqlite3_finalize(stmt);
+	if (rc != SQLITE_OK) {
+		fprintf(stderr, "Erro ao inserir medico, rc: %d\n", rc);
+		sqlite3_close(db);
+		return ERROR_CODE;
+	}
+
+	medico->id = sqlite3_last_insert_rowid(db);
+	sqlite3_close(db);
+	return OK_CODE;
 }
