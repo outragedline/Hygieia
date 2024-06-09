@@ -1,5 +1,4 @@
-globber = run_command('sh', '-c', 'find . -name "*.c" | sort', check: true)
-src = globber.stdout().strip().split('\n')
+src = ['./db.c', './main.c']
 
 sqlite = dependency('sqlite3', static: true)
 executable('Hygieia', src, dependencies: [sqlite])
