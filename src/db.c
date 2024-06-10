@@ -1,6 +1,7 @@
 #include "db.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #define DB_STRING "./db.sqlite3"
 
 int createdb()
@@ -52,6 +53,40 @@ int createdb()
 	sqlite3_free(err_msg);
 	sqlite3_close(db);
 	return OK_CODE;
+}
+
+Medico *buscarMedico(int id)
+{
+	Medico *medico = (Medico *)malloc(sizeof(Medico));
+	sqlite3 *db;
+	sqlite3_stmt *stmt;
+	int rc = sqlite3_open(DB_STRING, &db);
+	if (rc != SQLITE_OK) {
+		fprintf(stderr, "Erro %d: %s\n", rc, sqlite3_errmsg(db));
+		return NULL;
+	}
+	char *sql = "SELECT * FROM Medico WHERE id = :id;";
+	rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+	rc = sqlite3_bind_int(stmt, 1, id);
+
+	// A busca e baseada no id, entao vou assumir que nao vai ter mais
+	// de uma linha de resultado
+	// se tiver vai ser bem estranho...
+	rc = sqlite3_step(stmt);
+	if (rc != SQLITE_ROW) {
+		return NULL;
+	}
+
+	medico->id = sqlite3_column_int(stmt, 0);
+	medico->nome = (char *)malloc(sizeof(char) * BUFFER_SIZE);
+	strcpy(medico->nome, (char *)sqlite3_column_text(stmt, 1));
+	medico->especialidade = (char *)malloc(sizeof(char) * BUFFER_SIZE);
+	strcpy(medico->especialidade, (char *)sqlite3_column_text(stmt, 2));
+	medico->cod = sqlite3_column_int(stmt, 3);
+
+	sqlite3_finalize(stmt);
+	sqlite3_close(db);
+	return medico;
 }
 
 int inserirMedico(Medico *medico)

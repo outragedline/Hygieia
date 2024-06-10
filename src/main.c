@@ -27,5 +27,13 @@ int main(int argc, char *argv[])
 	printf("Id paciente %d\n", paciente->id);
 
 	free(paciente);
+
+	Medico *m = buscarMedico(5);
+	if (m != NULL) {
+		printf("%d\n", m->id);
+		printf("%s\n", m->nome);
+		printf("%s\n", m->especialidade);
+		printf("%d\n", m->cod);
+	}
 	return EXIT_SUCCESS;
 }
