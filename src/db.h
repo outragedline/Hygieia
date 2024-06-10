@@ -24,12 +24,13 @@ typedef struct {
 	unsigned int cod;
 } Medico;
 
+enum Status { agendado, finalizado, cancelado };
 typedef struct {
 	unsigned int id;
 	Paciente *p;
 	Medico *m;
 	char *dataHora;
-	unsigned short status;
+	enum Status status;
 } Agendamento;
 
 //Todas as funções abaixo retornam OK_CODE se tudo ocorrer bem e ERROR_CODE em caso de erro

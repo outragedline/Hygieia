@@ -19,7 +19,7 @@ int createdb()
 		    "cpf TEXT,"
 		    "telefone TEXT,"
 		    "cep TEXT,"
-		    "idade INTEGER"
+		    "idade INTEGER,"
 		    "alergias TEXT,"
 		    "deficiencias TEXT,"
 		    "genero INTEGER"
@@ -60,12 +60,12 @@ int inserirMedico(Medico *medico)
 	sqlite3_stmt *stmt;
 	int rc = sqlite3_open(DB_STRING, &db);
 	if (rc != SQLITE_OK) {
-		fprintf(stderr, "Erro ao inserir medico, rc: %d\n", rc);
+		fprintf(stderr, "Erro %d: %s\n", rc, sqlite3_errmsg(db));
 		return ERROR_CODE;
 	}
 
 	char *sql =
-		"INSERT INTO Medico(nome,especialidade,cod) VALUES(?, ?, ?)";
+		"INSERT INTO Medico(nome,especialidade,cod) VALUES(:nome,:especialidade,:cod)";
 	rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
 	rc = sqlite3_bind_text(stmt, 1, medico->nome, -1, SQLITE_TRANSIENT);
 	rc = sqlite3_bind_text(stmt, 2, medico->especialidade, -1,
@@ -73,15 +73,15 @@ int inserirMedico(Medico *medico)
 	rc = sqlite3_bind_int(stmt, 3, medico->cod);
 
 	rc = sqlite3_step(stmt);
-	if (rc != SQLITE_OK) {
-		fprintf(stderr, "Erro ao inserir medico, rc: %d\n", rc);
+	if (rc != SQLITE_OK && rc != SQLITE_DONE) {
+		fprintf(stderr, "Erro %d: %s\n", rc, sqlite3_errmsg(db));
 		sqlite3_close(db);
 		return ERROR_CODE;
 	}
 
 	rc = sqlite3_finalize(stmt);
 	if (rc != SQLITE_OK) {
-		fprintf(stderr, "Erro ao inserir medico, rc: %d\n", rc);
+		fprintf(stderr, "Erro %d: %s\n", rc, sqlite3_errmsg(db));
 		sqlite3_close(db);
 		return ERROR_CODE;
 	}
@@ -97,12 +97,13 @@ int inserirPaciente(Paciente *paciente)
 	sqlite3_stmt *stmt;
 	int rc = sqlite3_open(DB_STRING, &db);
 	if (rc != SQLITE_OK) {
-		fprintf(stderr, "Erro ao inserir medico, rc: %d\n", rc);
+		fprintf(stderr, "Erro %d: %s\n", rc, sqlite3_errmsg(db));
 		return ERROR_CODE;
 	}
 
 	char *sql =
-		"INSERT INTO Medico(nome,especialidade,cod) VALUES(?, ?, ?)";
+		"INSERT INTO Paciente(nome,cpf,telefone,cep,alergias,deficiencias,genero,idade) "
+		"VALUES(:nome,:cpf,:telefone,:cep,:alergias,:deficiencias,:genero,:idade)";
 	rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
 	rc = sqlite3_bind_text(stmt, 1, medico->nome, -1, SQLITE_TRANSIENT);
 	rc = sqlite3_bind_text(stmt, 2, medico->especialidade, -1,
