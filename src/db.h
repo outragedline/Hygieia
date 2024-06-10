@@ -5,16 +5,17 @@
 #define ERROR_CODE -1
 #define OK_CODE 0
 
+enum Genero { masculino, feminino };
 typedef struct {
 	unsigned int id;
 	char *nome;
 	char *cpf;
 	char *telefone;
 	char *cep;
-	unsigned int idade;
 	char *alergias;
 	char *deficiencias;
-	unsigned short genero;
+	unsigned int idade;
+	enum Genero genero;
 } Paciente;
 
 typedef struct {
@@ -41,3 +42,4 @@ int createdb();
  * exceto pelo id preenchidos, caso tudo ocorra bem o id sera setado ao longo da execucao
  */
 int inserirMedico(Medico *);
+int inserirPaciente(Paciente *);
