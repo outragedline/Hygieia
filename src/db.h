@@ -9,11 +9,7 @@ typedef struct {
 	unsigned int id;
 	char *nome;
 	char *cpf;
-	char *rg;
 	char *telefone;
-	char *rua;
-	char *bairro;
-	char *numero;
 	char *cep;
 	unsigned int idade;
 	char *alergias;
