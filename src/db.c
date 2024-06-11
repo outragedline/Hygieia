@@ -223,3 +223,38 @@ int inserirPaciente(Paciente *paciente)
 	sqlite3_close(db);
 	return OK_CODE;
 }
+
+int inserirAgendamento(Agendamento *agendamento)
+{
+	sqlite3 *db;
+	sqlite3_stmt *stmt;
+	int rc = sqlite3_open(DB_STRING, &db);
+	if (rc != SQLITE_OK) {
+		fprintf(stderr, "Erro %d: %s\n", rc, sqlite3_errmsg(db));
+		return ERROR_CODE;
+	}
+	char *sql = "INSERT INTO Agendamento(medico_id,paciente_id,dataHORA) "
+		    "VALUES(:medico_id,:paciente_id,:dataHora)";
+	sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+	rc = sqlite3_bind_int(stmt, 1, agendamento->medico->id);
+	rc = sqlite3_bind_int(stmt, 2, agendamento->paciente->id);
+	rc = sqlite3_bind_text(stmt, 3, agendamento->dataHora, -1,
+			       SQLITE_TRANSIENT);
+
+	rc = sqlite3_step(stmt);
+	if (rc != SQLITE_OK && rc != SQLITE_DONE) {
+		fprintf(stderr, "Erro %d: %s\n", rc, sqlite3_errmsg(db));
+		sqlite3_close(db);
+		return ERROR_CODE;
+	}
+
+	rc = sqlite3_finalize(stmt);
+	if (rc != SQLITE_OK) {
+		fprintf(stderr, "Erro ao inserir paciente, rc: %d\n", rc);
+		sqlite3_close(db);
+		return ERROR_CODE;
+	}
+	agendamento->id = sqlite3_last_insert_rowid(db);
+	sqlite3_close(db);
+	return OK_CODE;
+}

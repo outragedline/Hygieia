@@ -4,6 +4,8 @@
 #include "db.h"
 int main(int argc, char *argv[])
 {
+	int rc;
+
 	createdb();
 	Medico *medico = (Medico *)malloc(sizeof(Medico));
 	medico->nome = "Joseval";
@@ -51,5 +53,18 @@ int main(int argc, char *argv[])
 		printf("%d\n", p->genero);
 	}
 
+	Agendamento *agendamento = (Agendamento *)malloc(sizeof(Agendamento));
+	agendamento->medico = buscarMedico(5);
+	agendamento->paciente = buscarPaciente(5);
+	agendamento->dataHora = "18/06/2024:15:00";
+	if (agendamento->medico != NULL && agendamento->paciente != NULL) {
+		rc = inserirAgendamento(agendamento);
+		if (rc == OK_CODE) {
+			printf("Agendamento feito\n");
+		}
+	}
+
+	// Memory leak
+	free(agendamento);
 	return EXIT_SUCCESS;
 }

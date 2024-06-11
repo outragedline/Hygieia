@@ -54,3 +54,4 @@ Paciente *buscarPaciente(unsigned int id);
  */
 int inserirMedico(Medico *);
 int inserirPaciente(Paciente *);
+int inserirAgendamento(Agendamento *);
