@@ -30,10 +30,26 @@ int main(int argc, char *argv[])
 
 	Medico *m = buscarMedico(5);
 	if (m != NULL) {
+		printf("\nbuscarMedico\n");
 		printf("%d\n", m->id);
 		printf("%s\n", m->nome);
 		printf("%s\n", m->especialidade);
 		printf("%d\n", m->cod);
 	}
+
+	Paciente *p = buscarPaciente(5);
+	if (p != NULL) {
+		printf("\nbuscarPaciente\n");
+		printf("%d\n", p->id);
+		printf("%s\n", p->nome);
+		printf("%s\n", p->cpf);
+		printf("%s\n", p->telefone);
+		printf("%s\n", p->cep);
+		printf("%s\n", p->alergias);
+		printf("%s\n", p->deficiencias);
+		printf("%d\n", p->idade);
+		printf("%d\n", p->genero);
+	}
+
 	return EXIT_SUCCESS;
 }

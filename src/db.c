@@ -79,14 +79,67 @@ Medico *buscarMedico(unsigned int id)
 
 	medico->id = sqlite3_column_int(stmt, 0);
 	medico->nome = (char *)malloc(sizeof(char) * BUFFER_SIZE);
+
 	strcpy(medico->nome, (char *)sqlite3_column_text(stmt, 1));
 	medico->especialidade = (char *)malloc(sizeof(char) * BUFFER_SIZE);
+
 	strcpy(medico->especialidade, (char *)sqlite3_column_text(stmt, 2));
 	medico->cod = sqlite3_column_int(stmt, 3);
 
 	sqlite3_finalize(stmt);
 	sqlite3_close(db);
 	return medico;
+}
+
+Paciente *buscarPaciente(unsigned int id)
+{
+	Paciente *paciente = (Paciente *)malloc(sizeof(Paciente));
+	sqlite3 *db;
+	sqlite3_stmt *stmt;
+	int rc = sqlite3_open(DB_STRING, &db);
+	if (rc != SQLITE_OK) {
+		fprintf(stderr, "Erro %d: %s\n", rc, sqlite3_errmsg(db));
+		return NULL;
+	}
+
+	char *sql = "SELECT * FROM Paciente WHERE id = :id;";
+	rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+	rc = sqlite3_bind_int(stmt, 1, id);
+
+	// A busca e baseada no id, entao vou assumir que nao vai ter mais
+	// de uma linha de resultado
+	// se tiver vai ser bem estranho...
+	rc = sqlite3_step(stmt);
+	if (rc != SQLITE_ROW) {
+		return NULL;
+	}
+
+	paciente->id = sqlite3_column_int(stmt, 0);
+
+	paciente->nome = (char *)malloc(sizeof(char) * BUFFER_SIZE);
+	strcpy(paciente->nome, (char *)sqlite3_column_text(stmt, 1));
+
+	paciente->cpf = (char *)malloc(sizeof(char) * SMALL_BUFFER_SIZE);
+	strcpy(paciente->cpf, (char *)sqlite3_column_text(stmt, 2));
+
+	paciente->telefone = (char *)malloc(sizeof(char) * SMALL_BUFFER_SIZE);
+	strcpy(paciente->telefone, (char *)sqlite3_column_text(stmt, 3));
+
+	paciente->cep = (char *)malloc(sizeof(char) * SMALL_BUFFER_SIZE);
+	strcpy(paciente->cep, (char *)sqlite3_column_text(stmt, 4));
+
+	paciente->alergias = (char *)malloc(sizeof(char) * BIG_BUFFER_SIZE);
+	strcpy(paciente->alergias, (char *)sqlite3_column_text(stmt, 5));
+
+	paciente->deficiencias = (char *)malloc(sizeof(char) * BIG_BUFFER_SIZE);
+	strcpy(paciente->deficiencias, (char *)sqlite3_column_text(stmt, 6));
+
+	paciente->idade = sqlite3_column_int(stmt, 7);
+	paciente->genero = sqlite3_column_int(stmt, 8);
+
+	sqlite3_finalize(stmt);
+	sqlite3_close(db);
+	return paciente;
 }
 
 int inserirMedico(Medico *medico)

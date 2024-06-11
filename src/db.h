@@ -46,6 +46,7 @@ int createdb();
 */
 // TODO: Funcao de free pra cada struct
 Medico *buscarMedico(unsigned int id);
+Paciente *buscarPaciente(unsigned int id);
 
 /*
  * As funcoes desse grupo recebem um ponteiro para seu respectivo struct com todos os dados
