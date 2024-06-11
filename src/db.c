@@ -20,9 +20,9 @@ int createdb()
 		    "cpf TEXT,"
 		    "telefone TEXT,"
 		    "cep TEXT,"
-		    "idade INTEGER,"
 		    "alergias TEXT,"
 		    "deficiencias TEXT,"
+		    "idade INTEGER,"
 		    "genero INTEGER"
 		    ");"
 
@@ -55,7 +55,7 @@ int createdb()
 	return OK_CODE;
 }
 
-Medico *buscarMedico(int id)
+Medico *buscarMedico(unsigned int id)
 {
 	Medico *medico = (Medico *)malloc(sizeof(Medico));
 	sqlite3 *db;

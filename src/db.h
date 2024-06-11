@@ -28,8 +28,8 @@ typedef struct {
 enum Status { agendado, finalizado, cancelado };
 typedef struct {
 	unsigned int id;
-	Paciente *p;
-	Medico *m;
+	Paciente *paciente;
+	Medico *medico;
 	char *dataHora;
 	enum Status status;
 } Agendamento;
@@ -45,7 +45,7 @@ int createdb();
  * algo de errado
 */
 // TODO: Funcao de free pra cada struct
-Medico *buscarMedico(int id);
+Medico *buscarMedico(unsigned int id);
 
 /*
  * As funcoes desse grupo recebem um ponteiro para seu respectivo struct com todos os dados
