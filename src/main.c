@@ -127,13 +127,13 @@ int main()
 				break;
 			}
 
-			printf("Informe a data e hora da consulta no formato dd/mm/yyyy:HH:MM: ");
+			printf("Informe a data e hora da consulta no formato dd/mm/yyyy:HH:MM : ");
 			fgets(dataHora, SMALL_BUFFER_SIZE, stdin);
-			dataHora[strcspn(dataHora, "\n")] = 0;
 			printf("Informe o status da consulta (0 para agendado, 1 para finalizado, 2 para cancelado): ");
 			scanf("%d", &status);
 			getchar(); // Limpar o buffer do teclado
 
+			dataHora[strcspn(dataHora, "\n")] = 0;
 			agendamento = novoAgendamento(0, paciente, medico,
 						      dataHora, status);
 			if (agendamento != NULL) {
