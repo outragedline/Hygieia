@@ -77,8 +77,10 @@ int main()
 						genero);
 			if (paciente != NULL) {
 				if (inserirPaciente(paciente) == OK_CODE) {
+					freePaciente(paciente);
 					printf("Paciente cadastrado com sucesso!\n");
 				} else {
+					freePaciente(paciente);
 					printf("Erro ao cadastrar paciente.\n");
 				}
 			} else {
@@ -101,7 +103,9 @@ int main()
 			if (medico != NULL) {
 				if (inserirMedico(medico) == OK_CODE) {
 					printf("Médico cadastrado com sucesso!\n");
+					freeMedico(medico);
 				} else {
+					freeMedico(medico);
 					printf("Erro ao cadastrar médico.\n");
 				}
 			} else {
@@ -139,8 +143,10 @@ int main()
 			if (agendamento != NULL) {
 				if (inserirAgendamento(agendamento) ==
 				    OK_CODE) {
+					freeAgendamento(agendamento);
 					printf("Consulta agendada com sucesso!\n");
 				} else {
+					freeAgendamento(agendamento);
 					printf("Erro ao agendar consulta.\n");
 				}
 			} else {
@@ -166,6 +172,7 @@ int main()
 				       (paciente->genero == masculino) ?
 					       "Masculino" :
 					       "Feminino");
+				freePaciente(paciente);
 			} else {
 				printf("Paciente não encontrado.\n");
 			}
@@ -181,6 +188,7 @@ int main()
 				printf("Especialidade: %s\n",
 				       medico->especialidade);
 				printf("Código: %u\n", medico->cod);
+				freeMedico(medico);
 			} else {
 				printf("Médico não encontrado.\n");
 			}
@@ -208,6 +216,7 @@ int main()
 				printf("Nome: %s\n", agendamento->medico->nome);
 				printf("Especialidade: %s\n",
 				       agendamento->medico->especialidade);
+				freeAgendamento(agendamento);
 			} else {
 				printf("Consulta não encontrada.\n");
 			}
