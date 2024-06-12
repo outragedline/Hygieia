@@ -4,6 +4,102 @@
 #include <string.h>
 #define DB_STRING "./db.sqlite3"
 
+Paciente *novoPaciente(unsigned int id, char *nome, char *cpf, char *telefone,
+		       char *cep, char *alergias, char *deficiencias,
+		       unsigned int idade, enum Genero genero)
+{
+	Paciente *paciente = (Paciente *)malloc(sizeof(Paciente));
+	paciente->id = id;
+	paciente->nome = (char *)malloc(sizeof(char) * BUFFER_SIZE);
+	paciente->cpf = (char *)malloc(sizeof(char) * SMALL_BUFFER_SIZE);
+	paciente->telefone = (char *)malloc(sizeof(char) * SMALL_BUFFER_SIZE);
+	paciente->cep = (char *)malloc(sizeof(char) * SMALL_BUFFER_SIZE);
+	paciente->alergias = (char *)malloc(sizeof(char) * BIG_BUFFER_SIZE);
+	paciente->deficiencias = (char *)malloc(sizeof(char) * BIG_BUFFER_SIZE);
+	paciente->genero = genero;
+
+	if (nome != NULL)
+		strcpy(paciente->nome, nome);
+	if (cpf != NULL)
+		strcpy(paciente->cpf, cpf);
+	if (telefone != NULL)
+		strcpy(paciente->telefone, telefone);
+	if (cep != NULL)
+		strcpy(paciente->cep, cep);
+	if (alergias != NULL)
+		strcpy(paciente->alergias, alergias);
+	if (deficiencias != NULL)
+		strcpy(paciente->deficiencias, deficiencias);
+
+	return paciente;
+}
+
+void freePaciente(Paciente *paciente)
+{
+	free(paciente->nome);
+	free(paciente->cpf);
+	free(paciente->telefone);
+	free(paciente->cep);
+	free(paciente->alergias);
+	free(paciente->deficiencias);
+	free(paciente);
+	return;
+}
+
+Medico *novoMedico(unsigned int id, char *nome, char *especialidade,
+		   unsigned int cod)
+{
+	Medico *medico = (Medico *)malloc(sizeof(Medico));
+	medico->id = id;
+	medico->nome = (char *)malloc(sizeof(char) * BUFFER_SIZE);
+	medico->especialidade = malloc(sizeof(char) * BUFFER_SIZE);
+	medico->cod = cod;
+
+	if (nome != NULL)
+		strcpy(medico->nome, nome);
+	if (especialidade != NULL)
+		strcpy(medico->especialidade, especialidade);
+
+	return medico;
+}
+
+void freeMedico(Medico *medico)
+{
+	free(medico->nome);
+	free(medico->especialidade);
+	return;
+}
+
+Agendamento *novoAgendamento(unsigned int id, Paciente *paciente,
+			     Medico *medico, char *dataHora, enum Status status)
+{
+	Agendamento *agendamento = (Agendamento *)malloc(sizeof(Agendamento));
+	agendamento->id = id;
+	agendamento->paciente = NULL;
+	agendamento->medico = NULL;
+	agendamento->dataHora =
+		(char *)malloc(sizeof(char) * SMALL_BUFFER_SIZE);
+	agendamento->status = status;
+
+	if (paciente != NULL)
+		agendamento->paciente = paciente;
+	if (medico != NULL)
+		agendamento->medico = medico;
+	if (dataHora != NULL)
+		strcpy(agendamento->dataHora, dataHora);
+
+	return agendamento;
+}
+
+void freeAgendamento(Agendamento *agendamento)
+{
+	freeMedico(agendamento->medico);
+	freePaciente(agendamento->paciente);
+	free(agendamento->dataHora);
+	free(agendamento);
+	return;
+}
+
 int createdb()
 {
 	sqlite3 *db;
