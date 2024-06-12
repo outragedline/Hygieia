@@ -65,6 +65,13 @@ int main()
 			scanf("%d", &genero);
 			getchar(); // Limpar o buffer do teclado
 
+			nome[strcspn(nome, "\n")] = 0;
+			cpf[strcspn(cpf, "\n")] = 0;
+			telefone[strcspn(telefone, "\n")] = 0;
+			cep[strcspn(cep, "\n")] = 0;
+			alergias[strcspn(alergias, "\n")] = 0;
+			deficiencias[strcspn(deficiencias, "\n")] = 0;
+
 			paciente = novoPaciente(0, nome, cpf, telefone, cep,
 						alergias, deficiencias, idade,
 						genero);
@@ -88,6 +95,8 @@ int main()
 			scanf("%d", &cod);
 			getchar(); // Limpar o buffer do teclado
 
+			nome[strcspn(nome, "\n")] = 0;
+			especialidade[strcspn(especialidade, "\n")] = 0;
 			medico = novoMedico(0, nome, especialidade, cod);
 			if (medico != NULL) {
 				if (inserirMedico(medico) == OK_CODE) {
@@ -118,8 +127,9 @@ int main()
 				break;
 			}
 
-			printf("Informe a data e hora da consulta: ");
+			printf("Informe a data e hora da consulta no formato dd/mm/yyyy:HH:MM: ");
 			fgets(dataHora, SMALL_BUFFER_SIZE, stdin);
+			dataHora[strcspn(dataHora, "\n")] = 0;
 			printf("Informe o status da consulta (0 para agendado, 1 para finalizado, 2 para cancelado): ");
 			scanf("%d", &status);
 			getchar(); // Limpar o buffer do teclado
@@ -182,7 +192,7 @@ int main()
 			agendamento = buscarAgendamento(id);
 			if (agendamento != NULL) {
 				printf("Consulta encontrada:\n");
-				printf("Data e Hora: %s\n",
+				printf("Data e Hora:  %s\n",
 				       agendamento->dataHora);
 				printf("Status: %s\n",
 				       (agendamento->status == agendado) ?
