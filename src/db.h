@@ -32,7 +32,7 @@ que serao informados com um comentario ao lado de cada um
 */
 
 #include <sqlite3.h>
-#define SMALL_BUFFER_SIZE 16
+#define SMALL_BUFFER_SIZE 32
 #define BUFFER_SIZE 64
 #define BIG_BUFFER_SIZE 256
 #define ERROR_CODE -1
