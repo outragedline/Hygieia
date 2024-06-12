@@ -38,6 +38,7 @@ int createdb()
 		    "medico_id,"
 		    "paciente_id,"
 		    "dataHora TEXT,"
+		    "status INTEGER,"
 		    "FOREIGN KEY (medico_id) REFERENCES Medico(id),"
 		    "FOREIGN KEY (paciente_id) REFERENCES Paciente(id)"
 		    ")";
@@ -142,6 +143,47 @@ Paciente *buscarPaciente(unsigned int id)
 	return paciente;
 }
 
+Agendamento *buscarAgendamento(unsigned int id)
+{
+	Agendamento *agendamento = (Agendamento *)malloc(sizeof(Agendamento));
+	sqlite3 *db;
+	sqlite3_stmt *stmt;
+	int rc = sqlite3_open(DB_STRING, &db);
+	if (rc != SQLITE_OK) {
+		fprintf(stderr, "Erro %d: %s\n", rc, sqlite3_errmsg(db));
+		return NULL;
+	}
+
+	char *sql = "SELECT * FROM Agendamento WHERE id = :id;";
+	rc = sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+	rc = sqlite3_bind_int(stmt, 1, id);
+
+	// A busca e baseada no id, entao vou assumir que nao vai ter mais
+	// de uma linha de resultado
+	// se tiver vai ser bem estranho...
+	rc = sqlite3_step(stmt);
+	if (rc != SQLITE_ROW) {
+		return NULL;
+	}
+
+	agendamento->id = sqlite3_column_int(stmt, 0);
+	agendamento->medico = buscarMedico(sqlite3_column_int(stmt, 1));
+	agendamento->paciente = buscarPaciente(sqlite3_column_int(stmt, 2));
+	if (agendamento->medico == NULL || agendamento->paciente == NULL) {
+		return NULL;
+	}
+
+	agendamento->dataHora =
+		(char *)malloc(sizeof(char) * SMALL_BUFFER_SIZE);
+	strcpy(agendamento->dataHora, (char *)sqlite3_column_text(stmt, 3));
+
+	agendamento->status = sqlite3_column_int(stmt, 4);
+
+	sqlite3_finalize(stmt);
+	sqlite3_close(db);
+	return agendamento;
+}
+
 int inserirMedico(Medico *medico)
 {
 	sqlite3 *db;
@@ -233,13 +275,16 @@ int inserirAgendamento(Agendamento *agendamento)
 		fprintf(stderr, "Erro %d: %s\n", rc, sqlite3_errmsg(db));
 		return ERROR_CODE;
 	}
-	char *sql = "INSERT INTO Agendamento(medico_id,paciente_id,dataHORA) "
-		    "VALUES(:medico_id,:paciente_id,:dataHora)";
+	char *sql =
+		"INSERT INTO Agendamento(medico_id,paciente_id,dataHora,status) "
+		"VALUES(:medico_id,:paciente_id,:dataHora,:status)";
 	sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
 	rc = sqlite3_bind_int(stmt, 1, agendamento->medico->id);
 	rc = sqlite3_bind_int(stmt, 2, agendamento->paciente->id);
-	rc = sqlite3_bind_text(stmt, 3, agendamento->dataHora, -1,
+	rc = sqlite3_bind_text(stmt, 3, agendamento->dataHora,
+			       sizeof(char) * SMALL_BUFFER_SIZE,
 			       SQLITE_TRANSIENT);
+	rc = sqlite3_bind_int(stmt, 4, agendamento->status);
 
 	rc = sqlite3_step(stmt);
 	if (rc != SQLITE_OK && rc != SQLITE_DONE) {

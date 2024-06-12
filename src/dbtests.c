@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
 
 	free(paciente);
 
-	Medico *m = buscarMedico(5);
+	Medico *m = buscarMedico(1);
 	if (m != NULL) {
 		printf("\nbuscarMedico\n");
 		printf("%d\n", m->id);
@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
 		printf("%d\n", m->cod);
 	}
 
-	Paciente *p = buscarPaciente(5);
+	Paciente *p = buscarPaciente(1);
 	if (p != NULL) {
 		printf("\nbuscarPaciente\n");
 		printf("%d\n", p->id);
@@ -54,9 +54,10 @@ int main(int argc, char *argv[])
 	}
 
 	Agendamento *agendamento = (Agendamento *)malloc(sizeof(Agendamento));
-	agendamento->medico = buscarMedico(5);
-	agendamento->paciente = buscarPaciente(5);
-	agendamento->dataHora = "18/06/2024:15:00";
+	agendamento->medico = buscarMedico(1);
+	agendamento->paciente = buscarPaciente(1);
+	agendamento->dataHora = "19/06/2024:15:00";
+	agendamento->status = agendado;
 	if (agendamento->medico != NULL && agendamento->paciente != NULL) {
 		rc = inserirAgendamento(agendamento);
 		if (rc == OK_CODE) {
@@ -66,5 +67,14 @@ int main(int argc, char *argv[])
 
 	// Memory leak
 	free(agendamento);
+
+	Agendamento *a = buscarAgendamento(1);
+	if (a != NULL) {
+		printf("Agendamento\n");
+		printf("ID %d\n", a->id);
+		printf("Medico id %d\n", a->medico->id);
+		printf("Paciente id %d\n", a->paciente->id);
+		printf("status %d\n", a->status);
+	}
 	return EXIT_SUCCESS;
 }
