@@ -32,7 +32,7 @@ que serao informados com um comentario ao lado de cada um
 */
 
 #include <sqlite3.h>
-#define SMALL_BUFFER_SIZE 16
+#define SMALL_BUFFER_SIZE 32
 #define BUFFER_SIZE 64
 #define BIG_BUFFER_SIZE 256
 #define ERROR_CODE -1
@@ -40,27 +40,27 @@ que serao informados com um comentario ao lado de cada um
 
 enum Genero { masculino, feminino };
 typedef struct {
-	unsigned int id;
+	int id;
 	char *nome; // BUFFER_SIZE
 	char *cpf; //SMALL_BUFFER_SIZE
 	char *telefone; //SMALL_BUFFER_SIZE
 	char *cep; //SMALL_BUFFER_SIZE
 	char *alergias; // BIG_BUFFER_SIZE
 	char *deficiencias; //BIG_BUFFER_SIZE
-	unsigned int idade;
+	int idade;
 	enum Genero genero;
 } Paciente;
 
 typedef struct {
-	unsigned int id;
+	int id;
 	char *nome; // BUFFER_SIZE
 	char *especialidade; //BUFFER_SIZE
-	unsigned int cod;
+	int cod;
 } Medico;
 
 enum Status { agendado, finalizado, cancelado };
 typedef struct {
-	unsigned int id;
+	int id;
 	Paciente *paciente;
 	Medico *medico;
 	char *dataHora; //SMALL_BUFFER_SIZE
@@ -79,16 +79,14 @@ com malloc caso tudo ocorra bem ou NULL caso  algo de errado
 // Caso nao saiba o que passar como parametro para um ponteiro, passe NULL
 //
 // Essa funcao ira retornar um struct preenchido com os dados passados
-Paciente *novoPaciente(unsigned int id, char *nome, char *cpf, char *telefone,
-		       char *cep, char *alergias, char *deficiencias,
-		       unsigned int idade, enum Genero genero);
+Paciente *novoPaciente(int id, char *nome, char *cpf, char *telefone, char *cep,
+		       char *alergias, char *deficiencias, int idade,
+		       enum Genero genero);
 
-Medico *novoMedico(unsigned int id, char *nome, char *especialidade,
-		   unsigned int cod);
+Medico *novoMedico(int id, char *nome, char *especialidade, int cod);
 
-Agendamento *novoAgendamento(unsigned int id, Paciente *paciente,
-			     Medico *medico, char *dataHora,
-			     enum Status status);
+Agendamento *novoAgendamento(int id, Paciente *paciente, Medico *medico,
+			     char *dataHora, enum Status status);
 
 void freePaciente(Paciente *);
 void freeMedico(Medico *);
@@ -105,9 +103,9 @@ int inserirPaciente(Paciente *);
 int inserirMedico(Medico *);
 int inserirAgendamento(Agendamento *);
 
-int deletePaciente(unsigned int id);
-int deleteMedico(unsigned int id);
-int deleteAgendamento(unsigned int id);
+int deletePaciente(int id);
+int deleteMedico(int id);
+int deleteAgendamento(int id);
 
 /*
 As funcoes desse grupo podem gerar memory leak pois retornam ponteiros de structs
@@ -115,6 +113,6 @@ alocados com malloc, nao esqueca de usar suas respectivas funcoes free quando na
 precisar mais da variavel as funcoes desse grupo retornam um ponteiro para o struct alocado
 com malloc caso tudo ocorra bem ou NULL caso  algo de errado
 */
-Paciente *buscarPaciente(unsigned int id);
-Medico *buscarMedico(unsigned int id);
-Agendamento *buscarAgendamento(unsigned int id);
+Paciente *buscarPaciente(int id);
+Medico *buscarMedico(int id);
+Agendamento *buscarAgendamento(int id);
