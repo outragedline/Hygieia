@@ -33,6 +33,8 @@ int main(int argc, char *argv[])
 			printf("Agendamento feito\n");
 		}
 	}
+	freeAgendamento(agendamento);
+
 	Medico *m = buscarMedico(1);
 	if (m != NULL) {
 		printf("\nbuscarMedico\n");
@@ -41,6 +43,7 @@ int main(int argc, char *argv[])
 		printf("%s\n", m->especialidade);
 		printf("%d\n", m->cod);
 	}
+	freeMedico(m);
 
 	Paciente *p = buscarPaciente(1);
 	if (p != NULL) {
@@ -55,6 +58,7 @@ int main(int argc, char *argv[])
 		printf("%d\n", p->idade);
 		printf("%d\n", p->genero);
 	}
+	freePaciente(p);
 
 	Agendamento *a = buscarAgendamento(1);
 	if (a != NULL) {
@@ -63,6 +67,23 @@ int main(int argc, char *argv[])
 		printf("Medico id %d\n", a->medico->id);
 		printf("Paciente id %d\n", a->paciente->id);
 		printf("status %d\n", a->status);
+	}
+	freeAgendamento(a);
+
+	PacientesLista *pacientes = buscarPacientesLista();
+	PacientesLista *current = pacientes;
+	while (current != NULL) {
+		printf("\nbuscarPacientesLista\n");
+		printf("%d\n", current->paciente->id);
+		printf("%s\n", current->paciente->nome);
+		printf("%s\n", current->paciente->cpf);
+		printf("%s\n", current->paciente->telefone);
+		printf("%s\n", current->paciente->cep);
+		printf("%s\n", current->paciente->alergias);
+		printf("%s\n", current->paciente->deficiencias);
+		printf("%d\n", current->paciente->idade);
+		printf("%d\n", current->paciente->genero);
+		current = current->next;
 	}
 	return EXIT_SUCCESS;
 }

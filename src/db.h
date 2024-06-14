@@ -68,6 +68,25 @@ typedef struct {
 } Agendamento;
 
 /*
+Os seguintes structs sao listas ligadas simples onde o ultimo node da lista aponta para NULL
+nao esqueca de liberar a memoria com suas respectivas funcoes free
+*/
+typedef struct PacientesLista {
+	Paciente *paciente;
+	struct PacientesLista *next;
+} PacientesLista;
+
+typedef struct MedicosLista {
+	Medico *medico;
+	struct MedicosLista *next;
+} MedicosLista;
+
+typedef struct AgendamentosLista {
+	Agendamento *agendamento;
+	struct AgendamentosLista *next;
+} AgendamentosLista;
+
+/*
 As funcoes desse grupo podem gerar memory leak pois retornam ponteiros de structs
 alocados com malloc, nao esqueca de usar suas respectivas funcoes free quando nao
 precisar mais da variavel as funcoes desse grupo retornam um ponteiro para o struct alocado
@@ -94,6 +113,11 @@ void freePaciente(Paciente *);
 void freeMedico(Medico *);
 void freeAgendamento(Agendamento *);
 
+// Passe o primeiro node da lista como parametro
+void freePacientesLista(PacientesLista *);
+void freeMedicosAr(MedicosLista *);
+void freeAgendamentosLista(AgendamentosLista *);
+
 //Todas as funções abaixo retornam OK_CODE se tudo ocorrer bem e ERROR_CODE em caso de erro
 int createdb();
 
@@ -118,3 +142,8 @@ com malloc caso tudo ocorra bem ou NULL caso  algo de errado
 Paciente *buscarPaciente(unsigned int id);
 Medico *buscarMedico(unsigned int id);
 Agendamento *buscarAgendamento(unsigned int id);
+// As seguintes funcoes retornam o inicio de uma lista ligada com todos os dados de suas
+// respectivas tabelas no banco de dados
+PacientesLista *buscarPacientesLista();
+MedicosLista *buscarMedicosLista();
+AgendamentosLista *buscarAgendamentosLista();

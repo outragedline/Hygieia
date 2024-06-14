@@ -280,6 +280,52 @@ Agendamento *buscarAgendamento(unsigned int id)
 	return agendamento;
 }
 
+int buscarPacientesListaCallback(void *head, int argc, char **argv,
+				 char **azColName)
+{
+	PacientesLista *current = (PacientesLista *)head;
+	while (current != NULL) {
+		current = current->next;
+
+	}
+	current = (PacientesLista *)malloc(sizeof(PacientesLista));
+	current->paciente = novoPaciente(strtoul(argv[0], NULL, 10), argv[1],
+					 argv[2], argv[3], argv[4], argv[5],
+					 argv[6], strtoul(argv[7], NULL, 10),
+					 strtoul(argv[8], NULL, 10));
+	current->next = NULL;
+	return 0;
+}
+PacientesLista *buscarPacientesLista()
+{
+	PacientesLista *head = (PacientesLista *)malloc(sizeof(PacientesLista));
+	head->paciente = NULL;
+	head->next = NULL;
+	sqlite3 *db;
+	char *err_msg;
+	int rc = sqlite3_open(DB_STRING, &db);
+	if (rc != SQLITE_OK) {
+		fprintf(stderr, "Erro %d: %s\n", rc, sqlite3_errmsg(db));
+		return NULL;
+	}
+	char *sql = "SELECT * FROM Paciente;";
+	sqlite3_exec(db, sql, buscarPacientesListaCallback, head, &err_msg);
+	sqlite3_close(db);
+	sqlite3_free(err_msg);
+	return head;
+}
+
+void freePacientesLista(PacientesLista *head)
+{
+	PacientesLista *current = head;
+	while (current != NULL) {
+		PacientesLista *temp = current;
+		current = current->next;
+		freePaciente(temp->paciente);
+		free(temp);
+	}
+}
+
 int inserirMedico(Medico *medico)
 {
 	sqlite3 *db;
