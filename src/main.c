@@ -27,7 +27,6 @@ int main()
 	char especialidade[BUFFER_SIZE], dataHora[SMALL_BUFFER_SIZE];
 	int idade, cod;
 	enum Genero genero;
-	int genaux;
 	enum Status status;
 
 	Paciente *paciente;
