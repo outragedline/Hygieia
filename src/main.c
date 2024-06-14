@@ -1,5 +1,6 @@
 #include "db.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 void menu()
@@ -18,13 +19,13 @@ void menu()
 int main()
 {
 	int escolha;
-	unsigned int id;
+	int id;
 	char nome[BUFFER_SIZE], cpf[SMALL_BUFFER_SIZE],
 		telefone[SMALL_BUFFER_SIZE];
 	char cep[SMALL_BUFFER_SIZE], alergias[BIG_BUFFER_SIZE],
 		deficiencias[BIG_BUFFER_SIZE];
 	char especialidade[BUFFER_SIZE], dataHora[SMALL_BUFFER_SIZE];
-	unsigned int idade, cod;
+	int idade, cod;
 	enum Genero genero;
 	enum Status status;
 
@@ -60,10 +61,8 @@ int main()
 			fgets(deficiencias, BIG_BUFFER_SIZE, stdin);
 			printf("Idade: ");
 			scanf("%d", &idade);
-			getchar(); // Limpar o buffer do teclado
 			printf("Gênero (0 para masculino, 1 para feminino): ");
 			scanf("%d", &genero);
-			getchar(); // Limpar o buffer do teclado
 
 			nome[strcspn(nome, "\n")] = 0;
 			cpf[strcspn(cpf, "\n")] = 0;
@@ -77,8 +76,9 @@ int main()
 						genero);
 			if (paciente != NULL) {
 				if (inserirPaciente(paciente) == OK_CODE) {
-					freePaciente(paciente);
 					printf("Paciente cadastrado com sucesso!\n");
+					printf("ID: %u\n", paciente->id);
+					freePaciente(paciente);
 				} else {
 					freePaciente(paciente);
 					printf("Erro ao cadastrar paciente.\n");
@@ -133,7 +133,8 @@ int main()
 
 			printf("Informe a data e hora da consulta no formato dd/mm/yyyy:HH:MM : ");
 			fgets(dataHora, SMALL_BUFFER_SIZE, stdin);
-			printf("Informe o status da consulta (0 para agendado, 1 para finalizado, 2 para cancelado): ");
+			printf("Informe o status da consulta (0 para agendado, 1 para "
+			       "finalizado, 2 para cancelado): ");
 			scanf("%d", &status);
 			getchar(); // Limpar o buffer do teclado
 
