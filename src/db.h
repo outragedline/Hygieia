@@ -67,6 +67,37 @@ typedef struct {
 	enum Status status;
 } Agendamento;
 
+typedef struct PacienteNode {
+	Paciente *paciente;
+	struct PacienteNode *next;
+} PacienteNode;
+
+typedef struct MedicoNode {
+	Medico *paciente;
+	struct MedicoNode *next;
+} MedicoNode;
+
+typedef struct AgendamentoNode {
+	Agendamento *paciente;
+	struct AgendamentoNode *next;
+} AgendamentoNode;
+
+typedef struct {
+	PacienteNode *head;
+} PacienteLista;
+
+typedef struct {
+	MedicoNode *head;
+} MedicoLista;
+
+typedef struct {
+	AgendamentoNode *head;
+} AgendamentoLista;
+
+PacienteLista *buscarPacienteLista();
+void freePacienteLista(PacienteLista *);
+void freeMedicoLista(MedicoLista *);
+void freeAgendamentoLista(AgendamentoLista *);
 /*
 As funcoes desse grupo podem gerar memory leak pois retornam ponteiros de structs
 alocados com malloc, nao esqueca de usar suas respectivas funcoes free quando nao

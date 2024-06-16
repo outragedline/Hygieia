@@ -1,3 +1,4 @@
 .cache/clangd/index
 build
 db.sqlite3
+a.out

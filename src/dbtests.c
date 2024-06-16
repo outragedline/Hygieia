@@ -64,5 +64,9 @@ int main(int argc, char *argv[])
 		printf("Paciente id %d\n", a->paciente->id);
 		printf("status %d\n", a->status);
 	}
-	return EXIT_SUCCESS;
+
+	PacienteLista *pacienteLista = buscarPacienteLista();
+	freePacienteLista(pacienteLista);
+
+		return EXIT_SUCCESS;
 }
