@@ -68,5 +68,10 @@ int main(int argc, char *argv[])
 	PacienteLista *pacienteLista = buscarPacienteLista();
 	freePacienteLista(pacienteLista);
 
-		return EXIT_SUCCESS;
+	MedicoLista *medicoLista = buscarMedicoLista();
+	freeMedicoLista(medicoLista);
+
+	AgendamentoLista *agendamentoLista = buscarAgendamentoLista();
+	freeAgendamentoLista(agendamentoLista);
+	return EXIT_SUCCESS;
 }

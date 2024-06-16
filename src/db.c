@@ -131,8 +131,8 @@ int createdb()
 
 		    "CREATE TABLE IF NOT EXISTS Agendamento("
 		    "id INTEGER PRIMARY KEY,"
-		    "medico_id,"
 		    "paciente_id,"
+		    "medico_id,"
 		    "dataHora TEXT,"
 		    "status INTEGER,"
 		    "FOREIGN KEY (medico_id) REFERENCES Medico(id),"
@@ -317,10 +317,10 @@ int buscarPacienteListaCallback(void *lista, int argc, char **argv,
 {
 	PacienteLista *pacienteLista = (PacienteLista *)lista;
 	PacienteNode *newNode = novoPacienteNode(NULL);
-	newNode->paciente = novoPaciente(strtoul(argv[0], NULL, 10), argv[1],
+	newNode->paciente = novoPaciente(strtol(argv[0], NULL, 10), argv[1],
 					 argv[2], argv[3], argv[4], argv[5],
-					 argv[6], strtoul(argv[7], NULL, 10),
-					 strtoul(argv[8], NULL, 10));
+					 argv[6], strtol(argv[7], NULL, 10),
+					 strtol(argv[8], NULL, 10));
 	pacienteListaAppend(pacienteLista, newNode);
 	return 0;
 }
@@ -349,6 +349,156 @@ void freePacienteLista(PacienteLista *lista)
 	while (current != NULL) {
 		next = current->next;
 		freePaciente(current->paciente);
+		free(current);
+		current = next;
+	}
+	free(lista);
+}
+
+MedicoNode *novoMedicoNode(Medico *medico)
+{
+	MedicoNode *node = (MedicoNode *)malloc(sizeof(MedicoNode));
+	node->medico = NULL;
+	node->next = NULL;
+	if (medico != NULL) {
+		node->medico = medico;
+	}
+
+	return node;
+}
+
+void medicoListaAppend(MedicoLista *lista, MedicoNode *node)
+{
+	if (lista->head == NULL) {
+		lista->head = node;
+		return;
+	}
+
+	MedicoNode *lastNode = lista->head;
+	while (lastNode->next != NULL) {
+		lastNode = lastNode->next;
+	}
+	lastNode->next = node;
+}
+MedicoLista *novoMedicoLista()
+{
+	MedicoLista *lista = (MedicoLista *)malloc(sizeof(MedicoLista));
+	lista->head = NULL;
+	return lista;
+}
+
+int buscarMedicoListaCallback(void *lista, int argc, char **argv,
+			      char **azColName)
+{
+	MedicoLista *medicoLista = (MedicoLista *)lista;
+	MedicoNode *newNode = novoMedicoNode(NULL);
+	newNode->medico = novoMedico(strtol(argv[0], NULL, 10), argv[1],
+				     argv[2], strtol(argv[3], NULL, 10));
+	medicoListaAppend(medicoLista, newNode);
+	return 0;
+}
+MedicoLista *buscarMedicoLista()
+{
+	MedicoLista *medicoLista = novoMedicoLista();
+
+	sqlite3 *db;
+	char *err_msg;
+	int rc = sqlite3_open(DB_STRING, &db);
+	if (rc != SQLITE_OK) {
+		fprintf(stderr, "Erro %d: %s\n", rc, sqlite3_errmsg(db));
+		return NULL;
+	}
+	char *sql = "SELECT * FROM Medico;";
+	sqlite3_exec(db, sql, buscarMedicoListaCallback, medicoLista, &err_msg);
+	sqlite3_close(db);
+	sqlite3_free(err_msg);
+	return medicoLista;
+}
+
+void freeMedicoLista(MedicoLista *lista)
+{
+	MedicoNode *next, *current = lista->head;
+	while (current != NULL) {
+		next = current->next;
+		freeMedico(current->medico);
+		free(current);
+		current = next;
+	}
+	free(lista);
+}
+
+AgendamentoNode *novoAgendamentoNode(Agendamento *agendamento)
+{
+	AgendamentoNode *node =
+		(AgendamentoNode *)malloc(sizeof(AgendamentoNode));
+	node->agendamento = NULL;
+	node->next = NULL;
+	if (agendamento != NULL) {
+		node->agendamento = agendamento;
+	}
+
+	return node;
+}
+
+void agendamentoListaAppend(AgendamentoLista *lista, AgendamentoNode *node)
+{
+	if (lista->head == NULL) {
+		lista->head = node;
+		return;
+	}
+
+	AgendamentoNode *lastNode = lista->head;
+	while (lastNode->next != NULL) {
+		lastNode = lastNode->next;
+	}
+	lastNode->next = node;
+}
+AgendamentoLista *novoAgendamentoLista()
+{
+	AgendamentoLista *lista =
+		(AgendamentoLista *)malloc(sizeof(AgendamentoLista));
+	lista->head = NULL;
+	return lista;
+}
+
+int buscarAgendamentoListaCallback(void *lista, int argc, char **argv,
+				   char **azColName)
+{
+	AgendamentoLista *agendamentoLista = (AgendamentoLista *)lista;
+	AgendamentoNode *newNode = novoAgendamentoNode(NULL);
+	newNode->agendamento =
+		novoAgendamento(strtol(argv[0], NULL, 10),
+				buscarPaciente(strtol(argv[1], NULL, 10)),
+				buscarMedico(strtol(argv[2], NULL, 10)),
+				argv[3], strtol(argv[4], NULL, 10));
+	agendamentoListaAppend(agendamentoLista, newNode);
+	return 0;
+}
+AgendamentoLista *buscarAgendamentoLista()
+{
+	AgendamentoLista *agendamentoLista = novoAgendamentoLista();
+
+	sqlite3 *db;
+	char *err_msg;
+	int rc = sqlite3_open(DB_STRING, &db);
+	if (rc != SQLITE_OK) {
+		fprintf(stderr, "Erro %d: %s\n", rc, sqlite3_errmsg(db));
+		return NULL;
+	}
+	char *sql = "SELECT * FROM Agendamento;";
+	sqlite3_exec(db, sql, buscarAgendamentoListaCallback, agendamentoLista,
+		     &err_msg);
+	sqlite3_close(db);
+	sqlite3_free(err_msg);
+	return agendamentoLista;
+}
+
+void freeAgendamentoLista(AgendamentoLista *lista)
+{
+	AgendamentoNode *next, *current = lista->head;
+	while (current != NULL) {
+		next = current->next;
+		freeAgendamento(current->agendamento);
 		free(current);
 		current = next;
 	}

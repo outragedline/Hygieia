@@ -73,12 +73,12 @@ typedef struct PacienteNode {
 } PacienteNode;
 
 typedef struct MedicoNode {
-	Medico *paciente;
+	Medico *medico;
 	struct MedicoNode *next;
 } MedicoNode;
 
 typedef struct AgendamentoNode {
-	Agendamento *paciente;
+	Agendamento *agendamento;
 	struct AgendamentoNode *next;
 } AgendamentoNode;
 
@@ -95,6 +95,9 @@ typedef struct {
 } AgendamentoLista;
 
 PacienteLista *buscarPacienteLista();
+MedicoLista *buscarMedicoLista();
+AgendamentoLista *buscarAgendamentoLista();
+
 void freePacienteLista(PacienteLista *);
 void freeMedicoLista(MedicoLista *);
 void freeAgendamentoLista(AgendamentoLista *);
