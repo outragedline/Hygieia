@@ -152,12 +152,11 @@ void cadastrarAgendamento()
 	agendamento = novoAgendamento(0, paciente, medico, dataHora, agendado);
 	if (agendamento != NULL) {
 		if (inserirAgendamento(agendamento) == OK_CODE) {
-			freeAgendamento(agendamento);
-
 			printf(separator);
 			printf("Consulta agendada com sucesso!\n");
 			printf("ID: %d\n", agendamento->id);
 			printf(separator);
+			freeAgendamento(agendamento);
 			return;
 		}
 		freeAgendamento(agendamento);
@@ -359,6 +358,49 @@ void buscarAgendamentoListaInterface()
 	}
 }
 
+void deletePacienteInterface()
+{
+	clear();
+	int id, rc;
+	printf("Informe o ID do paciente: ");
+	scanf("%d", &id);
+	getchar(); // Limpar o buffer do teclado
+	rc = deletePaciente(id);
+	if (rc == OK_CODE) {
+		printf("Paciente deletado com sucesso!\n");
+		return;
+	}
+	printf("O paciente nao pode ser deletado!\n");
+}
+
+void deleteMedicoInterface()
+{
+	clear();
+	int id, rc;
+	printf("Informe o ID do medico: ");
+	scanf("%d", &id);
+	getchar(); // Limpar o buffer do teclado
+	rc = deleteMedico(id);
+	if (rc == OK_CODE) {
+		printf("Medico deletado com sucesso!\n");
+		return;
+	}
+	printf("O medico nao pode ser deletado!\n");
+}
+void deleteAgendamentoInterface()
+{
+	clear();
+	int id, rc;
+	printf("Informe o ID do agendamento: ");
+	scanf("%d", &id);
+	getchar(); // Limpar o buffer do teclado
+	rc = deleteAgendamento(id);
+	if (rc == OK_CODE) {
+		printf("Agendamento deletado com sucesso!\n");
+		return;
+	}
+	printf("O agendamento nao pode ser deletado!\n");
+}
 void menu()
 {
 	printf("\nMenu:\n");
@@ -371,6 +413,9 @@ void menu()
 	printf("7. Mostrar pacientes cadastrados\n");
 	printf("8. Mostrar medicos cadastrados\n");
 	printf("9. Mostrar consultas agendadas\n");
+	printf("10. Deletar paciente cadastrado\n");
+	printf("11. Deletar medico cadastrado\n");
+	printf("12. Deletar consulta cadastrada\n");
 	printf("0. Sair\n");
 	printf("Escolha uma opcao: ");
 }
@@ -419,10 +464,22 @@ int main()
 		case 9:
 			buscarAgendamentoListaInterface();
 			break;
+
+		case 10:
+			deletePacienteInterface();
+			break;
+		case 11:
+			deleteMedicoInterface();
+			break;
+
+		case 12:
+			deleteAgendamentoInterface();
+			break;
 		case 0:
 			printf("Saindo...\n");
 			break;
 		default:
+			clear();
 			printf("Opcao invalida.\n");
 		}
 	} while (escolha != 0);

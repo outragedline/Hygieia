@@ -110,34 +110,35 @@ int createdb()
 	}
 
 	char *err_msg = 0;
-	char *sql = "CREATE TABLE IF NOT EXISTS Paciente("
-		    "id INTEGER PRIMARY KEY,"
-		    "nome TEXT,"
-		    "cpf TEXT,"
-		    "telefone TEXT,"
-		    "cep TEXT,"
-		    "alergias TEXT,"
-		    "deficiencias TEXT,"
-		    "idade INTEGER,"
-		    "genero INTEGER"
-		    ");"
+	char *sql =
+		"CREATE TABLE IF NOT EXISTS Paciente("
+		"id INTEGER PRIMARY KEY,"
+		"nome TEXT,"
+		"cpf TEXT,"
+		"telefone TEXT,"
+		"cep TEXT,"
+		"alergias TEXT,"
+		"deficiencias TEXT,"
+		"idade INTEGER,"
+		"genero INTEGER"
+		");"
 
-		    "CREATE TABLE IF NOT EXISTS Medico("
-		    "id INTEGER PRIMARY KEY,"
-		    "nome TEXT,"
-		    "especialidade TEXT,"
-		    "cod INTEGER"
-		    ");"
+		"CREATE TABLE IF NOT EXISTS Medico("
+		"id INTEGER PRIMARY KEY,"
+		"nome TEXT,"
+		"especialidade TEXT,"
+		"cod INTEGER"
+		");"
 
-		    "CREATE TABLE IF NOT EXISTS Agendamento("
-		    "id INTEGER PRIMARY KEY,"
-		    "paciente_id,"
-		    "medico_id,"
-		    "dataHora TEXT,"
-		    "status INTEGER,"
-		    "FOREIGN KEY (medico_id) REFERENCES Medico(id),"
-		    "FOREIGN KEY (paciente_id) REFERENCES Paciente(id)"
-		    ")";
+		"CREATE TABLE IF NOT EXISTS Agendamento("
+		"id INTEGER PRIMARY KEY,"
+		"paciente_id,"
+		"medico_id,"
+		"dataHora TEXT,"
+		"status INTEGER,"
+		"FOREIGN KEY (medico_id) REFERENCES Medico(id) ON DELETE CASCADE,"
+		"FOREIGN KEY (paciente_id) REFERENCES Paciente(id) ON DELETE CASCADE"
+		")";
 	rc = sqlite3_exec(db, sql, 0, 0, &err_msg);
 
 	if (rc != SQLITE_OK) {
@@ -552,6 +553,38 @@ int inserirPaciente(Paciente *paciente)
 	return OK_CODE;
 }
 
+int deleteAgendamento(int id)
+{
+	sqlite3 *db;
+	sqlite3_stmt *stmt;
+	int rc = sqlite3_open(DB_STRING, &db);
+	if (rc != SQLITE_OK) {
+		fprintf(stderr, "Erro %d: %s\n", rc, sqlite3_errmsg(db));
+		return ERROR_CODE;
+	}
+
+	char *sql = "DELETE FROM Agendamento WHERE id = :id;";
+	sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+	rc = sqlite3_bind_int(stmt, 1, id);
+
+	rc = sqlite3_step(stmt);
+	if (rc != SQLITE_OK && rc != SQLITE_DONE) {
+		fprintf(stderr, "Erro %d: %s\n", rc, sqlite3_errmsg(db));
+		sqlite3_close(db);
+		return ERROR_CODE;
+	}
+
+	rc = sqlite3_finalize(stmt);
+	if (rc != SQLITE_OK) {
+		fprintf(stderr, "Erro ao deletar agendamento, rc: %d\n", rc);
+		sqlite3_close(db);
+		return ERROR_CODE;
+	}
+
+	sqlite3_close(db);
+	return OK_CODE;
+}
+
 int inserirMedico(Medico *medico)
 {
 	sqlite3 *db;
@@ -585,6 +618,38 @@ int inserirMedico(Medico *medico)
 	}
 
 	medico->id = sqlite3_last_insert_rowid(db);
+	sqlite3_close(db);
+	return OK_CODE;
+}
+
+int deleteMedico(int id)
+{
+	sqlite3 *db;
+	sqlite3_stmt *stmt;
+	int rc = sqlite3_open(DB_STRING, &db);
+	if (rc != SQLITE_OK) {
+		fprintf(stderr, "Erro %d: %s\n", rc, sqlite3_errmsg(db));
+		return ERROR_CODE;
+	}
+
+	char *sql = "DELETE FROM Medico WHERE id = :id;";
+	sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+	rc = sqlite3_bind_int(stmt, 1, id);
+
+	rc = sqlite3_step(stmt);
+	if (rc != SQLITE_OK && rc != SQLITE_DONE) {
+		fprintf(stderr, "Erro %d: %s\n", rc, sqlite3_errmsg(db));
+		sqlite3_close(db);
+		return ERROR_CODE;
+	}
+
+	rc = sqlite3_finalize(stmt);
+	if (rc != SQLITE_OK) {
+		fprintf(stderr, "Erro ao deletar medico, rc: %d\n", rc);
+		sqlite3_close(db);
+		return ERROR_CODE;
+	}
+
 	sqlite3_close(db);
 	return OK_CODE;
 }
@@ -623,6 +688,38 @@ int inserirAgendamento(Agendamento *agendamento)
 		return ERROR_CODE;
 	}
 	agendamento->id = sqlite3_last_insert_rowid(db);
+	sqlite3_close(db);
+	return OK_CODE;
+}
+
+int deletePaciente(int id)
+{
+	sqlite3 *db;
+	sqlite3_stmt *stmt;
+	int rc = sqlite3_open(DB_STRING, &db);
+	if (rc != SQLITE_OK) {
+		fprintf(stderr, "Erro %d: %s\n", rc, sqlite3_errmsg(db));
+		return ERROR_CODE;
+	}
+
+	char *sql = "DELETE FROM Paciente WHERE id = :id;";
+	sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+	rc = sqlite3_bind_int(stmt, 1, id);
+
+	rc = sqlite3_step(stmt);
+	if (rc != SQLITE_OK && rc != SQLITE_DONE) {
+		fprintf(stderr, "Erro %d: %s\n", rc, sqlite3_errmsg(db));
+		sqlite3_close(db);
+		return ERROR_CODE;
+	}
+
+	rc = sqlite3_finalize(stmt);
+	if (rc != SQLITE_OK) {
+		fprintf(stderr, "Erro ao deletar paciente, rc: %d\n", rc);
+		sqlite3_close(db);
+		return ERROR_CODE;
+	}
+
 	sqlite3_close(db);
 	return OK_CODE;
 }
