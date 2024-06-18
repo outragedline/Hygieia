@@ -79,7 +79,7 @@ void inserirPacienteInterface()
 	printf(separator);
 }
 
-void cadastrarMedico()
+Medico *cadastrarMedico()
 {
 	clear();
 	char nome[BUFFER_SIZE], especialidade[BUFFER_SIZE];
@@ -98,6 +98,12 @@ void cadastrarMedico()
 	nome[strcspn(nome, "\n")] = 0;
 	especialidade[strcspn(especialidade, "\n")] = 0;
 	medico = novoMedico(0, nome, especialidade, cod);
+	return medico;
+}
+void inserirMedicoInterface()
+{
+	Medico *medico = cadastrarMedico();
+
 	if (medico != NULL) {
 		if (inserirMedico(medico) == OK_CODE) {
 			printf(separator);
@@ -120,7 +126,7 @@ void cadastrarMedico()
 	printf(separator);
 }
 
-void cadastrarAgendamento()
+void inserirAgendamentoInterface()
 {
 	clear();
 	int id;
@@ -152,7 +158,6 @@ void cadastrarAgendamento()
 
 	printf("Informe a data e hora da consulta no formato dd/mm/yyyy:HH:MM : ");
 	fgets(dataHora, SMALL_BUFFER_SIZE, stdin);
-	getchar(); // Limpar o buffer do teclado
 
 	dataHora[strcspn(dataHora, "\n")] = 0;
 	agendamento = novoAgendamento(0, paciente, medico, dataHora, agendado);
@@ -250,6 +255,11 @@ void mostrarAgendamento(Agendamento *agendamento)
 {
 	printf("ID: %d\n", agendamento->id);
 	printf("Data e hora: %s\n", agendamento->dataHora);
+	printf("Status: %s\n",
+
+	       (agendamento->status == agendado)   ? "Agendado" :
+	       (agendamento->status == finalizado) ? "Finalizado" :
+						     "Cancelado");
 	printf(separator);
 	printf("Paciente:\n");
 	mostrarPaciente(agendamento->paciente);
@@ -432,6 +442,66 @@ void atualizarPacienteInterface()
 	printf("Erro ao criar paciente.\n");
 	printf(separator);
 }
+
+void atualizarMedicoInterface()
+{
+	Medico *medico = cadastrarMedico();
+	printf("Id: ");
+	scanf("%d", &medico->id);
+	if (medico != NULL) {
+		if (atualizarMedico(medico) == OK_CODE) {
+			printf(separator);
+			printf("Medico atualizado com sucesso!\n");
+			mostrarMedico(medico);
+			printf(separator);
+			freeMedico(medico);
+			return;
+		}
+		freeMedico(medico);
+		printf(separator);
+		printf("Erro ao cadastrar medico.\n");
+		printf(separator);
+		return;
+	}
+	printf(separator);
+	printf("Erro ao criar medico.\n");
+	printf(separator);
+}
+
+void atualizarAgendamentoInterface()
+{
+	clear();
+	int opt, id;
+	Agendamento *agendamento;
+	printf("Id: ");
+	scanf("%d", &id);
+	agendamento = buscarAgendamento(id);
+	getchar(); // Limpar o buffer do teclado
+	printf("1. Reagendar\n");
+	printf("2. Finalizar\n");
+	printf("3. Cancelar\n");
+	printf("O que deseja fazer? ");
+	scanf("%d", &opt);
+	getchar(); // Limpar o buffer do teclado
+	switch (opt) {
+	case 1:
+		printf("Informe a data e hora da consulta no formato dd/mm/yyyy:HH:MM : ");
+		fgets(agendamento->dataHora, SMALL_BUFFER_SIZE, stdin);
+		break;
+	case 2:
+		agendamento->status = finalizado;
+		break;
+	case 3:
+		agendamento->status = cancelado;
+		break;
+
+	default:
+		printf("Opcao invalida\n");
+	}
+
+	agendamento->dataHora[strcspn(agendamento->dataHora, "\n")] = 0;
+	atualizarAgendamento(agendamento);
+}
 void menu()
 {
 	printf("\nMenu:\n");
@@ -448,6 +518,8 @@ void menu()
 	printf("11. Deletar medico cadastrado\n");
 	printf("12. Deletar consulta cadastrada\n");
 	printf("13. Atualizar paciente cadastrado\n");
+	printf("14. Atualizar medico cadastrado\n");
+	printf("15. Atualizar agendamento cadastrado\n");
 	printf("0. Sair\n");
 	printf("Escolha uma opcao: ");
 }
@@ -472,10 +544,10 @@ int main()
 			inserirPacienteInterface();
 			break;
 		case 2:
-			cadastrarMedico();
+			inserirMedicoInterface();
 			break;
 		case 3:
-			cadastrarAgendamento();
+			inserirMedicoInterface();
 			break;
 		case 4:
 			buscarPacienteInterface();
@@ -509,6 +581,13 @@ int main()
 			break;
 		case 13:
 			atualizarPacienteInterface();
+			break;
+		case 14:
+			atualizarMedicoInterface();
+			break;
+
+		case 15:
+			atualizarAgendamentoInterface();
 			break;
 		case 0:
 			printf("Saindo...\n");

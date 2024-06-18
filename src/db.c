@@ -776,3 +776,83 @@ int atualizarPaciente(Paciente *paciente)
 	sqlite3_close(db);
 	return OK_CODE;
 }
+
+int atualizarMedico(Medico *medico)
+{
+	sqlite3 *db;
+	sqlite3_stmt *stmt;
+	int rc = sqlite3_open(DB_STRING, &db);
+	if (rc != SQLITE_OK) {
+		fprintf(stderr, "Erro %d: %s\n", rc, sqlite3_errmsg(db));
+		return ERROR_CODE;
+	}
+
+	char *sql = "UPDATE Medico "
+		    "SET "
+		    "nome = :nome,"
+		    "especialidade = :especialidade,"
+		    "cod = :cod "
+		    "WHERE id = :id";
+	sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+	rc = sqlite3_bind_text(stmt, 1, medico->nome, -1, SQLITE_TRANSIENT);
+	rc = sqlite3_bind_text(stmt, 2, medico->especialidade, -1,
+			       SQLITE_TRANSIENT);
+	rc = sqlite3_bind_int(stmt, 3, medico->cod);
+	rc = sqlite3_bind_int(stmt, 4, medico->id);
+
+	rc = sqlite3_step(stmt);
+	if (rc != SQLITE_OK && rc != SQLITE_DONE) {
+		fprintf(stderr, "Erro %d: %s\n", rc, sqlite3_errmsg(db));
+		sqlite3_close(db);
+		return ERROR_CODE;
+	}
+
+	rc = sqlite3_finalize(stmt);
+	if (rc != SQLITE_OK) {
+		fprintf(stderr, "Erro ao atualizar medico, rc: %d\n", rc);
+		sqlite3_close(db);
+		return ERROR_CODE;
+	}
+
+	sqlite3_close(db);
+	return OK_CODE;
+}
+int atualizarAgendamento(Agendamento *agendamento)
+{
+	sqlite3 *db;
+	sqlite3_stmt *stmt;
+	int rc = sqlite3_open(DB_STRING, &db);
+	if (rc != SQLITE_OK) {
+		fprintf(stderr, "Erro %d: %s\n", rc, sqlite3_errmsg(db));
+		return ERROR_CODE;
+	}
+
+	char *sql = "UPDATE Agendamento "
+		    "SET "
+		    "dataHora = :dataHora,"
+		    "status = :status "
+		    "WHERE id = :id";
+	sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+	// nao, nao vai dar pra mudar medico ou paciente
+	rc = sqlite3_bind_text(stmt, 1, agendamento->dataHora, -1,
+			       SQLITE_TRANSIENT);
+	rc = sqlite3_bind_int(stmt, 2, agendamento->status);
+	rc = sqlite3_bind_int(stmt, 3, agendamento->id);
+
+	rc = sqlite3_step(stmt);
+	if (rc != SQLITE_OK && rc != SQLITE_DONE) {
+		fprintf(stderr, "Erro %d: %s\n", rc, sqlite3_errmsg(db));
+		sqlite3_close(db);
+		return ERROR_CODE;
+	}
+
+	rc = sqlite3_finalize(stmt);
+	if (rc != SQLITE_OK) {
+		fprintf(stderr, "Erro ao atualizar agendamento, rc: %d\n", rc);
+		sqlite3_close(db);
+		return ERROR_CODE;
+	}
+
+	sqlite3_close(db);
+	return OK_CODE;
+}
