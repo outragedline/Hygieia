@@ -14,7 +14,7 @@ void clear()
 #endif
 }
 
-void cadastrarPaciente()
+Paciente *cadastrarPaciente()
 {
 	clear();
 	int idade;
@@ -53,6 +53,12 @@ void cadastrarPaciente()
 
 	paciente = novoPaciente(0, nome, cpf, telefone, cep, alergias,
 				deficiencias, idade, genero);
+	return paciente;
+}
+
+void inserirPacienteInterface()
+{
+	Paciente *paciente = cadastrarPaciente();
 	if (paciente != NULL) {
 		if (inserirPaciente(paciente) == OK_CODE) {
 			printf(separator);
@@ -401,6 +407,31 @@ void deleteAgendamentoInterface()
 	}
 	printf("O agendamento nao pode ser deletado!\n");
 }
+
+void atualizarPacienteInterface()
+{
+	Paciente *paciente = cadastrarPaciente();
+	printf("Id: ");
+	scanf("%d", &paciente->id);
+	if (paciente != NULL) {
+		if (atualizarPaciente(paciente) == OK_CODE) {
+			printf(separator);
+			printf("Paciente atualizado com sucesso!\n");
+			mostrarPaciente(paciente);
+			printf(separator);
+			freePaciente(paciente);
+			return;
+		}
+		freePaciente(paciente);
+		printf(separator);
+		printf("Erro ao cadastrar paciente.\n");
+		printf(separator);
+		return;
+	}
+	printf(separator);
+	printf("Erro ao criar paciente.\n");
+	printf(separator);
+}
 void menu()
 {
 	printf("\nMenu:\n");
@@ -416,6 +447,7 @@ void menu()
 	printf("10. Deletar paciente cadastrado\n");
 	printf("11. Deletar medico cadastrado\n");
 	printf("12. Deletar consulta cadastrada\n");
+	printf("13. Atualizar paciente cadastrado\n");
 	printf("0. Sair\n");
 	printf("Escolha uma opcao: ");
 }
@@ -437,7 +469,7 @@ int main()
 
 		switch (escolha) {
 		case 1:
-			cadastrarPaciente();
+			inserirPacienteInterface();
 			break;
 		case 2:
 			cadastrarMedico();
@@ -474,6 +506,9 @@ int main()
 
 		case 12:
 			deleteAgendamentoInterface();
+			break;
+		case 13:
+			atualizarPacienteInterface();
 			break;
 		case 0:
 			printf("Saindo...\n");

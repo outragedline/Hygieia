@@ -723,3 +723,56 @@ int deletePaciente(int id)
 	sqlite3_close(db);
 	return OK_CODE;
 }
+
+int atualizarPaciente(Paciente *paciente)
+{
+	sqlite3 *db;
+	sqlite3_stmt *stmt;
+	int rc = sqlite3_open(DB_STRING, &db);
+	if (rc != SQLITE_OK) {
+		fprintf(stderr, "Erro %d: %s\n", rc, sqlite3_errmsg(db));
+		return ERROR_CODE;
+	}
+
+	char *sql = "UPDATE Paciente "
+		    "SET "
+		    "nome = :nome,"
+		    "cpf = :cpf,"
+		    "telefone = :telefone,"
+		    "cep = :cep,"
+		    "alergias = :alergias,"
+		    "deficiencias = :deficiencias,"
+		    "idade = :idade,"
+		    "genero = :genero "
+		    "WHERE id = :id";
+	sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+	rc = sqlite3_bind_text(stmt, 1, paciente->nome, -1, SQLITE_TRANSIENT);
+	rc = sqlite3_bind_text(stmt, 2, paciente->cpf, -1, SQLITE_TRANSIENT);
+	rc = sqlite3_bind_text(stmt, 3, paciente->telefone, -1,
+			       SQLITE_TRANSIENT);
+	rc = sqlite3_bind_text(stmt, 4, paciente->cep, -1, SQLITE_TRANSIENT);
+	rc = sqlite3_bind_text(stmt, 5, paciente->alergias, -1,
+			       SQLITE_TRANSIENT);
+	rc = sqlite3_bind_text(stmt, 6, paciente->deficiencias, -1,
+			       SQLITE_TRANSIENT);
+	rc = sqlite3_bind_int(stmt, 7, paciente->idade);
+	rc = sqlite3_bind_int(stmt, 8, paciente->genero);
+	rc = sqlite3_bind_int(stmt, 9, paciente->id);
+
+	rc = sqlite3_step(stmt);
+	if (rc != SQLITE_OK && rc != SQLITE_DONE) {
+		fprintf(stderr, "Erro %d: %s\n", rc, sqlite3_errmsg(db));
+		sqlite3_close(db);
+		return ERROR_CODE;
+	}
+
+	rc = sqlite3_finalize(stmt);
+	if (rc != SQLITE_OK) {
+		fprintf(stderr, "Erro ao atualizar paciente, rc: %d\n", rc);
+		sqlite3_close(db);
+		return ERROR_CODE;
+	}
+
+	sqlite3_close(db);
+	return OK_CODE;
+}

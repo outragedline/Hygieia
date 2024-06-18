@@ -142,9 +142,11 @@ int deleteMedico(int id);
 int deleteAgendamento(int id);
 
 /*
-As funcoes desse grupo irao atualizar o paciente baseado no id do struct passado como parametro
+As funcoes desse grupo irao atualizar o banco de dados baseado no id do struct passado como parametro
 */
 int atualizarPaciente(Paciente *);
+int atualizarMedico(Medico *);
+int atualizarAgendamento(Agendamento *);
 
 /*
 As funcoes desse grupo podem gerar memory leak pois retornam ponteiros de structs
