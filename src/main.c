@@ -51,20 +51,27 @@ void cadastrarPaciente()
 				deficiencias, idade, genero);
 	if (paciente != NULL) {
 		if (inserirPaciente(paciente) == OK_CODE) {
+			printf(separator);
 			printf("Paciente cadastrado com sucesso!\n");
 			printf("ID: %d\n", paciente->id);
+			printf(separator);
 			freePaciente(paciente);
-		} else {
-			freePaciente(paciente);
-			printf("Erro ao cadastrar paciente.\n");
+			return;
 		}
-	} else {
-		printf("Erro ao criar paciente.\n");
+		freePaciente(paciente);
+		printf(separator);
+		printf("Erro ao cadastrar paciente.\n");
+		printf(separator);
+		return;
 	}
+	printf(separator);
+	printf("Erro ao criar paciente.\n");
+	printf(separator);
 }
 
 void cadastrarMedico()
 {
+	clear();
 	char nome[BUFFER_SIZE], especialidade[BUFFER_SIZE];
 	int cod;
 
@@ -83,19 +90,28 @@ void cadastrarMedico()
 	medico = novoMedico(0, nome, especialidade, cod);
 	if (medico != NULL) {
 		if (inserirMedico(medico) == OK_CODE) {
+			printf(separator);
 			printf("Médico cadastrado com sucesso!\n");
+			printf(separator);
+
 			freeMedico(medico);
-		} else {
-			freeMedico(medico);
-			printf("Erro ao cadastrar médico.\n");
+			return;
 		}
-	} else {
-		printf("Erro ao criar médico.\n");
+		freeMedico(medico);
+		printf(separator);
+		printf("Erro ao cadastrar médico.\n");
+		printf(separator);
+		return;
 	}
+
+	printf(separator);
+	printf("Erro ao criar médico.\n");
+	printf(separator);
 }
 
 void cadastrarAgendamento()
 {
+	clear();
 	int id;
 	Paciente *paciente;
 	Medico *medico;
@@ -106,7 +122,9 @@ void cadastrarAgendamento()
 	getchar(); // Limpar o buffer do teclado
 	paciente = buscarPaciente(id);
 	if (paciente == NULL) {
+		printf(separator);
 		printf("Paciente não encontrado.\n");
+		printf(separator);
 		return;
 	}
 
@@ -115,7 +133,9 @@ void cadastrarAgendamento()
 	getchar(); // Limpar o buffer do teclado
 	medico = buscarMedico(id);
 	if (medico == NULL) {
+		printf(separator);
 		printf("Médico não encontrado.\n");
+		printf(separator);
 		return;
 	}
 
@@ -128,14 +148,22 @@ void cadastrarAgendamento()
 	if (agendamento != NULL) {
 		if (inserirAgendamento(agendamento) == OK_CODE) {
 			freeAgendamento(agendamento);
+
+			printf(separator);
 			printf("Consulta agendada com sucesso!\n");
-		} else {
-			freeAgendamento(agendamento);
-			printf("Erro ao agendar consulta.\n");
+			printf(separator);
+			return;
 		}
-	} else {
-		printf("Erro ao criar consulta.\n");
+		freeAgendamento(agendamento);
+
+		printf(separator);
+		printf("Erro ao agendar consulta.\n");
+		printf(separator);
+		return;
 	}
+	printf(separator);
+	printf("Erro ao criar consulta.\n");
+	printf(separator);
 }
 
 void mostrarPaciente(Paciente *paciente)
@@ -153,6 +181,7 @@ void mostrarPaciente(Paciente *paciente)
 
 void buscarPacienteInterface()
 {
+	clear();
 	int id;
 	Paciente *paciente;
 	printf("Informe o ID do paciente: ");
@@ -160,12 +189,17 @@ void buscarPacienteInterface()
 	getchar(); // Limpar o buffer do teclado
 	paciente = buscarPaciente(id);
 	if (paciente != NULL) {
+		printf(separator);
 		printf("Paciente encontrado:\n");
 		mostrarPaciente(paciente);
+		printf(separator);
 		freePaciente(paciente);
+
 		return;
 	}
+	printf(separator);
 	printf("Paciente não encontrado.\n");
+	printf(separator);
 }
 
 void mostrarMedico(Medico *medico)
@@ -177,6 +211,7 @@ void mostrarMedico(Medico *medico)
 
 void buscarMedicoInterface()
 {
+	clear();
 	int id;
 	Medico *medico;
 	printf("Informe o ID do médico: ");
@@ -185,18 +220,23 @@ void buscarMedicoInterface()
 	medico = buscarMedico(id);
 
 	if (medico != NULL) {
+		printf(separator);
 		printf("Médico encontrado:\n");
 		mostrarMedico(medico);
+		printf(separator);
+
 		freeMedico(medico);
 		return;
 	}
+	printf(separator);
 	printf("Medico nao encontrado");
+	printf(separator);
 }
 
 void mostrarAgendamento(Agendamento *agendamento)
 {
-	printf("ID: %d", agendamento->id);
-	printf("Data e hora: %s", agendamento->dataHora);
+	printf("ID: %d\n", agendamento->id);
+	printf("Data e hora: %s\n", agendamento->dataHora);
 	printf(separator);
 	printf("Paciente:\n");
 	mostrarPaciente(agendamento->paciente);
@@ -207,6 +247,7 @@ void mostrarAgendamento(Agendamento *agendamento)
 
 void buscarAgendamentoInterface()
 {
+	clear();
 	int id;
 	Agendamento *agendamento;
 	printf("Informe o ID da consulta: ");
@@ -214,7 +255,9 @@ void buscarAgendamentoInterface()
 	getchar(); // Limpar o buffer do teclado
 	agendamento = buscarAgendamento(id);
 	if (agendamento != NULL) {
+		printf(separator);
 		mostrarAgendamento(agendamento);
+		printf(separator);
 		freeAgendamento(agendamento);
 		return;
 	}
@@ -247,6 +290,64 @@ void buscarPacienteListaInterface()
 		c = mostrarPacienteLista(lista);
 		printf("Total de %d pacientes cadastrados\n", c);
 		freePacienteLista(lista);
+	}
+}
+
+int mostrarMedicoLista(MedicoLista *lista)
+{
+	MedicoNode *next, *current = lista->head;
+	int c = 0;
+	while (current != NULL) {
+		c++;
+		next = current->next;
+		printf(separator);
+		mostrarMedico(current->medico);
+		current = next;
+	}
+	if (c > 0) {
+		printf(separator);
+	}
+	return c;
+}
+
+void buscarMedicoListaInterface()
+{
+	clear();
+	MedicoLista *lista = buscarMedicoLista();
+	int c;
+	if (lista != NULL) {
+		c = mostrarMedicoLista(lista);
+		printf("Total de %d medicos cadastrados\n", c);
+		freeMedicoLista(lista);
+	}
+}
+int mostrarAgendamentoLista(AgendamentoLista *lista)
+{
+	AgendamentoNode *next, *current = lista->head;
+	int c = 0;
+	while (current != NULL) {
+		c++;
+		next = current->next;
+		printf(separator);
+		mostrarAgendamento(current->agendamento);
+		printf(separator);
+		current = next;
+	}
+	if (c > 0) {
+		printf(separator);
+	}
+	return c;
+}
+
+void buscarAgendamentoListaInterface()
+{
+	clear();
+	AgendamentoLista *lista = buscarAgendamentoLista();
+	int c;
+	if (lista != NULL) {
+		c = mostrarAgendamentoLista(lista);
+		printf("Total de %d agendamentos cadastrados\n", c);
+		freeAgendamentoLista(lista);
 	}
 }
 
@@ -305,8 +406,10 @@ int main()
 			buscarPacienteListaInterface();
 			break;
 		case 8:
+			buscarMedicoListaInterface();
 			break;
 		case 9:
+			buscarAgendamentoListaInterface();
 			break;
 		case 0:
 			printf("Saindo...\n");
