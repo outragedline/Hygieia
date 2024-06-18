@@ -92,6 +92,7 @@ void cadastrarMedico()
 		if (inserirMedico(medico) == OK_CODE) {
 			printf(separator);
 			printf("Médico cadastrado com sucesso!\n");
+			printf("ID: %d\n", medico->id);
 			printf(separator);
 
 			freeMedico(medico);
@@ -151,6 +152,7 @@ void cadastrarAgendamento()
 
 			printf(separator);
 			printf("Consulta agendada com sucesso!\n");
+			printf("ID: %d\n", agendamento->id);
 			printf(separator);
 			return;
 		}
@@ -168,6 +170,7 @@ void cadastrarAgendamento()
 
 void mostrarPaciente(Paciente *paciente)
 {
+	printf("ID: %d\n", paciente->id);
 	printf("Nome: %s\n", paciente->nome);
 	printf("CPF: %s\n", paciente->cpf);
 	printf("Telefone: %s\n", paciente->telefone);
@@ -204,6 +207,7 @@ void buscarPacienteInterface()
 
 void mostrarMedico(Medico *medico)
 {
+	printf("ID: %d\n", medico->id);
 	printf("Nome: %s\n", medico->nome);
 	printf("Especialidade: %s\n", medico->especialidade);
 	printf("Código: %d\n", medico->cod);
