@@ -3,10 +3,16 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define separator "================================================"
+#define separator "\n================================================\n"
+
+void clear()
+{
+	system("clear");
+}
 
 void cadastrarPaciente()
 {
+	clear();
 	int idade;
 	char nome[BUFFER_SIZE], cpf[SMALL_BUFFER_SIZE],
 		telefone[SMALL_BUFFER_SIZE];
@@ -215,6 +221,35 @@ void buscarAgendamentoInterface()
 	printf("Consulta não encontrada.\n");
 }
 
+int mostrarPacienteLista(PacienteLista *lista)
+{
+	PacienteNode *next, *current = lista->head;
+	int c = 0;
+	while (current != NULL) {
+		c++;
+		next = current->next;
+		printf(separator);
+		mostrarPaciente(current->paciente);
+		current = next;
+	}
+	if (c > 0) {
+		printf(separator);
+	}
+	return c;
+}
+
+void buscarPacienteListaInterface()
+{
+	clear();
+	PacienteLista *lista = buscarPacienteLista();
+	int c;
+	if (lista != NULL) {
+		c = mostrarPacienteLista(lista);
+		printf("Total de %d pacientes cadastrados\n", c);
+		freePacienteLista(lista);
+	}
+}
+
 void menu()
 {
 	printf("\nMenu:\n");
@@ -224,12 +259,16 @@ void menu()
 	printf("4. Buscar Paciente\n");
 	printf("5. Buscar Médico\n");
 	printf("6. Buscar Consulta\n");
+	printf("7. Mostrar pacientes cadastrados\n");
+	printf("8. Mostrar medicos cadastrados\n");
+	printf("9. Mostrar consultas agendadas\n");
 	printf("0. Sair\n");
 	printf("Escolha uma opção: ");
 }
 
 int main()
 {
+	clear();
 	int escolha;
 	// Inicializando o banco de dados
 	if (createdb() != OK_CODE) {
@@ -260,6 +299,14 @@ int main()
 			break;
 		case 6:
 			buscarAgendamentoInterface();
+			break;
+
+		case 7:
+			buscarPacienteListaInterface();
+			break;
+		case 8:
+			break;
+		case 9:
 			break;
 		case 0:
 			printf("Saindo...\n");
