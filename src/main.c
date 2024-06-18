@@ -76,12 +76,12 @@ void cadastrarMedico()
 	int cod;
 
 	Medico *medico;
-	printf("Informe os dados do médico:\n");
+	printf("Informe os dados do medico:\n");
 	printf("Nome: ");
 	fgets(nome, BUFFER_SIZE, stdin);
 	printf("Especialidade: ");
 	fgets(especialidade, BUFFER_SIZE, stdin);
-	printf("Código: ");
+	printf("Codigo: ");
 	scanf("%d", &cod);
 	getchar(); // Limpar o buffer do teclado
 
@@ -91,7 +91,7 @@ void cadastrarMedico()
 	if (medico != NULL) {
 		if (inserirMedico(medico) == OK_CODE) {
 			printf(separator);
-			printf("Médico cadastrado com sucesso!\n");
+			printf("Medico cadastrado com sucesso!\n");
 			printf("ID: %d\n", medico->id);
 			printf(separator);
 
@@ -100,13 +100,13 @@ void cadastrarMedico()
 		}
 		freeMedico(medico);
 		printf(separator);
-		printf("Erro ao cadastrar médico.\n");
+		printf("Erro ao cadastrar medico.\n");
 		printf(separator);
 		return;
 	}
 
 	printf(separator);
-	printf("Erro ao criar médico.\n");
+	printf("Erro ao criar medico.\n");
 	printf(separator);
 }
 
@@ -124,18 +124,18 @@ void cadastrarAgendamento()
 	paciente = buscarPaciente(id);
 	if (paciente == NULL) {
 		printf(separator);
-		printf("Paciente não encontrado.\n");
+		printf("Paciente nao encontrado.\n");
 		printf(separator);
 		return;
 	}
 
-	printf("Informe o ID do médico: ");
+	printf("Informe o ID do medico: ");
 	scanf("%d", &id);
 	getchar(); // Limpar o buffer do teclado
 	medico = buscarMedico(id);
 	if (medico == NULL) {
 		printf(separator);
-		printf("Médico não encontrado.\n");
+		printf("Medico nao encontrado.\n");
 		printf(separator);
 		return;
 	}
@@ -201,7 +201,7 @@ void buscarPacienteInterface()
 		return;
 	}
 	printf(separator);
-	printf("Paciente não encontrado.\n");
+	printf("Paciente nao encontrado.\n");
 	printf(separator);
 }
 
@@ -210,7 +210,7 @@ void mostrarMedico(Medico *medico)
 	printf("ID: %d\n", medico->id);
 	printf("Nome: %s\n", medico->nome);
 	printf("Especialidade: %s\n", medico->especialidade);
-	printf("Código: %d\n", medico->cod);
+	printf("Codigo: %d\n", medico->cod);
 }
 
 void buscarMedicoInterface()
@@ -218,14 +218,14 @@ void buscarMedicoInterface()
 	clear();
 	int id;
 	Medico *medico;
-	printf("Informe o ID do médico: ");
+	printf("Informe o ID do medico: ");
 	scanf("%d", &id);
 	getchar(); // Limpar o buffer do teclado
 	medico = buscarMedico(id);
 
 	if (medico != NULL) {
 		printf(separator);
-		printf("Médico encontrado:\n");
+		printf("Medico encontrado:\n");
 		mostrarMedico(medico);
 		printf(separator);
 
@@ -265,7 +265,7 @@ void buscarAgendamentoInterface()
 		freeAgendamento(agendamento);
 		return;
 	}
-	printf("Consulta não encontrada.\n");
+	printf("Consulta nao encontrada.\n");
 }
 
 int mostrarPacienteLista(PacienteLista *lista)
@@ -359,16 +359,16 @@ void menu()
 {
 	printf("\nMenu:\n");
 	printf("1. Cadastrar Paciente\n");
-	printf("2. Cadastrar Médico\n");
+	printf("2. Cadastrar Medico\n");
 	printf("3. Agendar Consulta\n");
 	printf("4. Buscar Paciente\n");
-	printf("5. Buscar Médico\n");
+	printf("5. Buscar Medico\n");
 	printf("6. Buscar Consulta\n");
 	printf("7. Mostrar pacientes cadastrados\n");
 	printf("8. Mostrar medicos cadastrados\n");
 	printf("9. Mostrar consultas agendadas\n");
 	printf("0. Sair\n");
-	printf("Escolha uma opção: ");
+	printf("Escolha uma opcao: ");
 }
 
 int main()
@@ -419,7 +419,7 @@ int main()
 			printf("Saindo...\n");
 			break;
 		default:
-			printf("Opção inválida.\n");
+			printf("Opcao invalida.\n");
 		}
 	} while (escolha != 0);
 

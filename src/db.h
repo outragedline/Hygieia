@@ -1,6 +1,6 @@
 
 /*
-Por tudo que é mais sagrado não use os structs diretamente,
+Por tudo que e mais sagrado nao use os structs diretamente,
 se voce precisa de uma variavel do tipo de algum desses structs,
 utilize sua respectiva funcao responsavel por criar um struct desse
 em memoria, novoPaciente(), novoMedico(), etc
@@ -26,7 +26,7 @@ a forma correta seria
 medico *medico = novomedico(12, "josemir", "pediatria", 1232);
 strcpy(medico->nome ,"joseir");
 
-Voce deve usar como se fosse um array, nao um ponteiro, porque na verdade é isso mesmo,
+Voce deve usar como se fosse um array, nao um ponteiro, porque na verdade e isso mesmo,
 na implementacao todos esses ponteiros apontam pra arrays de tamanhos definidos em constantes
 que serao informados com um comentario ao lado de cada um
 */
@@ -126,7 +126,7 @@ void freePaciente(Paciente *);
 void freeMedico(Medico *);
 void freeAgendamento(Agendamento *);
 
-//Todas as funções abaixo retornam OK_CODE se tudo ocorrer bem e ERROR_CODE em caso de erro
+//Todas as funcoes abaixo retornam OK_CODE se tudo ocorrer bem e ERROR_CODE em caso de erro
 int createdb();
 
 /*
@@ -140,6 +140,11 @@ int inserirAgendamento(Agendamento *);
 int deletePaciente(int id);
 int deleteMedico(int id);
 int deleteAgendamento(int id);
+
+/*
+As funcoes desse grupo irao atualizar o paciente baseado no id do struct passado como parametro
+*/
+int atualizarPaciente(Paciente *);
 
 /*
 As funcoes desse grupo podem gerar memory leak pois retornam ponteiros de structs
